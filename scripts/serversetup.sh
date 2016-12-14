@@ -22,7 +22,7 @@ sudo service nginx restart
 
 printf "\nMoving Repos Assets to www...\n"
 
-sudo mkdir /home/www
+sudo mkdir /home/www  ???
 sudo rm /home/www/app-server -r
 sudo rm /home/www/api-server -r
 sudo cp ~/eztodo/app-server/ /home/www/ -r
