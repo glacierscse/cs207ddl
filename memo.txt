@@ -13,8 +13,8 @@ flask_sqlalchemy
 
 ####### Running Procedure
 0. python setup.py
-1. python run.py(server)
-2. python run.py()
+1. python sockets/Server.py(server)
+2. python run.py(client)
 
 
 
