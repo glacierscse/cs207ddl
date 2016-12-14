@@ -20,15 +20,6 @@ def serialize(json_obj):
         print('Invalid JSON object received:\n'+str(json_obj))
         return None
 
-# def serialize(json_obj):
-#     '''Turn a JSON object into bytes suitable for writing out to the network.
-#     Includes a fixed-width length field to simplify reconstruction on the other
-#     end of the wire.'''
-#     #your code here
-#     json_bytes = str.encode(io.getvalue())
-    
-#     return (len(json_bytes) + LENGTH_FIELD_LENGTH).to_bytes(LENGTH_FIELD_LENGTH, byteorder = 'little') + json_bytes
-
 
 class Deserializer(object):
     '''A buffering and bytes-to-json engine.
