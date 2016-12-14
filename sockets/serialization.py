@@ -25,11 +25,6 @@ def serialize(json_obj):
 #     Includes a fixed-width length field to simplify reconstruction on the other
 #     end of the wire.'''
 #     #your code here
-#     io = StringIO()
-
-#     json.dump(json_obj, io)
-    
-#     #io.getvalue()
 #     json_bytes = str.encode(io.getvalue())
     
 #     return (len(json_bytes) + LENGTH_FIELD_LENGTH).to_bytes(LENGTH_FIELD_LENGTH, byteorder = 'little') + json_bytes
