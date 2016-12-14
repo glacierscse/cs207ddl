@@ -32,6 +32,16 @@ printf "\n*******************************************************"
 printf "\nInstalling numpy ...\n"
 pip3 install numpy
 
+# install portalocker for Python3
+printf "\n*******************************************************"
+printf "\nInstalling portalocker ...\n"
+sudo pip3 install portalocker
+
+# install scipy for Python3
+printf "\n*******************************************************"
+printf "\nInstalling scipy ...\n"
+sudo pip3 install scipy
+
 printf "\n*******************************************************"
 printf "\nInstalling Flask and SQL Alchemy ...\n"
 source ~/venvs/flaskproj/bin/activate
