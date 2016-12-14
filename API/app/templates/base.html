@@ -1,0 +1,316 @@
+<html>
+  <head>
+  	{% if title %}
+  	<title>{{title}} - Timeseries</title>
+  	{% else %}
+  	<title>Welcome to CS207</title>
+  	{% endif %}
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/css/custom.css" rel="stylesheet">
+    <link href="/static/css/sweetalert.css" rel="stylesheet">
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/flot.js"></script>
+    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+    <script src="/static/js/bootstrap.js"></script>
+    <script src="/static/js/sweetalert.min.js"></script>
+    <script src="/static/js/d3.v3.min.js"></script>
+    <script src="/static/js/pace.min.js"></script>
+  </head>
+<link rel="stylesheet" type="text/css" href="/static/css/main.css"/>
+  <body>
+    <div class="container">
+  	<!--<div class="top30">
+      <h1><b>CS207 - Final Project</b></h1> <br>
+      <h3>Team Members: Yijun Zhou, Xinyi Ma, Wenxuan Dai, Feifei Peng, Yifan Wang</h3><br>
+    </div>-->
+
+    <hr>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li> {{ message }} </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+    <hr>
+    </div>
+    <script>
+      $(document).ready(function(){
+        //$("#options").hide();
+        $(".plotting").hide();
+        var metadata = [];
+        var timeseries = [];
+
+        function clearResults(){
+          $("#placeholder").empty();
+          $("#file-name").empty();
+          $("results").empty();
+        }
+
+        $("#ts-file").change(function(event){
+          console.log("Browse!");
+          $("#ts-id").val("");
+        });
+        $("#ts-file").change(function(event){
+          console.log('change')
+          if($("#ts-file")[0].files['length'] !== 0){
+            $("#file-name").html($("#ts-file")[0].files[0]['name']);
+          }
+        });
+
+/**
+        function get_type(thing){
+          if(thing===null)return "[object Null]"; // special case
+          return Object.prototype.toString.call(thing);
+        }
+*/
+        function plot(metadata, timeseries){
+          //console.log('plot a ts')
+          //console.log('ts',timeseries)
+          //console.log('mt', metadata)
+          var plots = [];
+          var meta_msg = ["<h4>Metadata</h4><ul>"];
+          for(i=0;i<timeseries.length;i++){
+            var x = timeseries[i]['time'];
+            var y = timeseries[i]['value'];
+            var data = [x,y]
+            var z = x.map(function(e,i){return [e, y[i]]});
+            //console.log('data',data)
+            plots.push({"label":"ID"+timeseries[i]['id'], "data":z});
+          }
+          //console.log('plots', plots)
+
+          for(i=0;i<metadata.length;i++){
+            meta_msg.push("<li>Blarg: " + metadata[i]['blarg'] +
+                          " ID: " + metadata[i]['id']+
+                          " Level: " + metadata[i]['level'] +
+                          " Mean: " + metadata[i]['mean'] +
+                          " Standard Dev: " + metadata[i]['std'] +
+                          "</li>");
+          }
+
+          //$("#blarg").prop("checked", true);
+          //plotMetadata(metadata.map(function(d){return Math.abs(d['blarg']);}));
+          //data = [[0.1, 0.3], [0.2, 0.1401]]
+          //console.log(get_type(data))
+          //console.log(get_type(data[1][1]))
+          meta_msg.push("</ul>")
+          $("#results").html(meta_msg.join(""));
+          $.plot($("#placeholder"), plots,{legend: {"show": true},
+                                                      xaxis:{show: true},
+                                                      yaxis:{show: true}});
+
+          //$("#options").show();
+          //$("#placeholder").show()
+          $("#results").show();
+        }
+
+        function plotSimilar(response, metadata, timeseries){
+          var similar_ids = [];
+
+          // Get similar ids
+          response = response['similar_points'];
+          var i;
+          for(i=0;i<response.length;i++){
+            similar_ids.push(response[i][1]);
+          }
+
+          // For each id, get timeseries data from SM and plot
+          for(i=0;i<similar_ids.length;i++){
+            $.ajax({
+              url: '/timeseries/'+similar_ids[i],
+              type: 'GET',
+              success: function(response){
+                metadata.push(response['metadata']);
+                timeseries.push(response['timeseries']);
+              },
+              error: function(response){
+                console.log("Error getting timeseries from sm");
+              }
+            });
+          }
+
+          $(document).ajaxStop(function(){
+            console.log("Finished ALL AJAX");
+            var plots = [];
+            var meta_msg = ["<h4>Metadata</h4><ul>"];
+            for(i=0;i<timeseries.length;i++){
+              var x = timeseries[i]['time'];
+              var y = timeseries[i]['value'];
+              var z = x.map(function(e,i){return [e, y[i]]});
+
+              plots.push({"label":"ID"+timeseries[i]['id'],"data":z});
+            }
+
+            for(i=0;i<metadata.length;i++){
+              meta_msg.push("<li>Blarg: " + metadata[i]['blarg'] +
+                            " ID: " + metadata[i]['id']+
+                            " Level: " + metadata[i]['level'] +
+                            " Mean: " + metadata[i]['mean'] +
+                            " Standard Dev: " + metadata[i]['std'] +
+                            "</li>");
+            }
+
+            //$("#blarg").prop("checked", true);
+            //plotMetadata(metadata.map(function(d){return Math.abs(d['blarg']);}));
+            meta_msg.push("</ul>")
+            $("#results").html(meta_msg.join(""));
+            $.plot($("#placeholder"), plots,{legend: {"show": true},
+                                             xaxis:{show: true},
+                                             yaxis:{show: true}});
+
+            //$("#options").show();
+            $("#results").show();
+          });
+        }
+
+        $("#similar-button").click(function(event){
+          var ts_id = $("#ts-id").val();
+          metadata = [];
+          timeseries = [];
+
+          clearResults();
+
+          if(!ts_id){
+            $(".plotting").show();
+            // Use uploaded ts data
+            var file = $("#ts-file")[0];//.files[0];
+            if(file.files['length'] == 0){
+              sweetAlert("Error", "Please enter an Id or upload a file. XD", "error");
+              $(".plotting").hide();
+              clearResults();
+              return;
+            }
+            file = file.files[0];
+            console.log('file',file)
+            $("#results").html("Fetching data...");
+
+            var reader = new FileReader();
+            reader.onload = function(e){
+              var ts = JSON.parse(e.target.result);
+              //var ts = JSON.stringify(eval("(" + e.target.result + ")"));
+              console.log('stringify ts',ts)
+              timeseries.push(ts);
+              console.log('parse timeseries',timeseries)
+
+              var ts = e.target.result;//JSON.parse(e.target.result);
+              //console.log('ts',ts)
+              plot(metadata, timeseries);
+            };
+            reader.readAsText(file);
+          }else{
+            // Get ts data from server
+            $("#results").html("Fetching data...");
+
+            // Get all metadata
+            $.ajax({
+              url: '/simquery?id='+ts_id,
+              type: 'GET',
+              success: function(response){
+                console.log('response',response['id'])
+                var similar_ids = [];
+                for(i=0;i<response['id'].length;i++){
+                  similar_ids.push(response['id'][i]);
+                }
+                console.log('similar_ids',similar_ids)
+                //metadata.push(response['metadata']);
+                //timeseries.push(response['timeseries']);
+                $("#results").html(similar_ids);
+              },
+              error: function(error){
+                console.log("Error GET timeseries!",error);
+              }
+            });
+          }
+        });
+
+
+        $("#display-button").click(function(event){
+
+          var ts_id = $("#ts-id").val();
+          metadata = [];
+          timeseries = [];
+
+          $(".plotting").show();
+          clearResults();
+
+          if(!ts_id){
+            // Use uploaded ts data
+            var file = $("#ts-file")[0];//.files[0];
+            if(file.files['length'] == 0){
+              sweetAlert("Error", "Please enter an Id or upload a file. XD", "error");
+              $(".plotting").hide();
+              clearResults();
+              return;
+            }
+            file = file.files[0];
+            console.log('file',file)
+            $("#results").html("Fetching data...");
+
+            var reader = new FileReader();
+            reader.onload = function(e){
+              var ts = JSON.parse(e.target.result);
+              //var ts = JSON.stringify(eval("(" + e.target.result + ")"));
+              console.log('stringify ts',ts)
+              timeseries.push(ts);
+              console.log('parse timeseries',timeseries)
+
+              var ts = e.target.result;//JSON.parse(e.target.result);
+              //console.log('ts',ts)
+              plot(metadata, timeseries);
+
+              $.ajax({
+                url: '/simquery',
+                type: 'GET',//'POST',
+                data: ts,
+                success: function(response){
+                  console.log(response)
+                  plotSimilar(response, metadata, timeseries);
+                },
+                error: function(error){
+                  console.log("Error POST timeseries!",error);
+                }
+              });
+            };
+
+            reader.readAsText(file);
+
+          }else{
+            // Get ts data from server
+            $("#results").html("Fetching data...");
+
+            // Get all metadata
+            $.ajax({
+              url: '/timeseries/'+ts_id,
+              type: 'GET',
+              success: function(response){
+                metadata.push(response['metadata']);
+                timeseries.push(response['timeseries']);
+                console.log('metadata',metadata)
+                console.log('timeseries',timeseries)
+                $.ajax({
+                  url: '/simquery',
+                  type: 'GET',
+                  data: {"id":ts_id},
+                  success: function(response){
+                    console.log('response',response)
+                    plotSimilar(response, metadata, timeseries);
+                  },
+                  error: function(error){
+                    console.log("Error GET timeseries!",error);
+                  }
+                });
+              },
+              error: function(error){
+                console.log("Error GET timeseries!",error);
+              }
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

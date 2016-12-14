@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content%}
+	<div class="container">
+	    <h2>CS207 - TimeSeries Project</h2>
+			<h3>Team Members: Yijun Zhou, Xinyi Ma, Wenxuan Dai, Feifei Peng, Yifan Wang</h3><br>
+	    <!--<input type="text" id="ts-id" placeholder="Please enter an ID for a timeseries">-->
+
+
+		 <div class="row">
+				<div id="myDIV2" class="header">
+					<input type="text" id="ts-id" placeholder="Please enter an ID for a timeseries" />
+				</div>
+		 </div>
+
+	   <div class="row top5">
+	      <div>
+					<label class="customUpload btnUpload btnM">
+			 		  Upload files
+						<input type="file" id="ts-file" style="display: none;">
+					</label>
+	        <p id="file-name"></p>
+	      </div>
+				<div>
+					<p>Select a file with the following format.</p>
+					<p>
+						{"id":1, "time":[1,2,3,4,5,...], "value":[2,3,4,5,6,...], "n":5}.
+					</p>
+				</div>
+
+			<div class="row top6">
+	      <div>
+	        <p><button type="button" id="display-button">Display Timeseries</button></p>
+	      </div>
+	    </div>
+
+			<div class="row top7">
+	      <div>
+	        <p><button type="button" id="similar-button">Get Similar</button></p>
+	      </div>
+	    </div>
+		</div>
+
+
+	  <div class="row top10 plotting" >
+      <h2>Plotting</h2>
+        <p id="results"></p>
+			  <div class="col-md-10">
+				  <div id="placeholder" style="width:600px;height:300px"></div>
+			  </div>
+		</div>
+	</div>
+
+{% endblock %}
