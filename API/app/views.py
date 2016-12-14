@@ -51,7 +51,7 @@ def connectDBServer(requestDict):
     s.send(s2)
     #print('send')
     #print(s.recv(1024))
-    msg = s.recv(8192)
+    msg = s.recv(1024)
     print(msg)
     ds = Deserializer()
     ds.append(msg)
@@ -64,7 +64,8 @@ def connectDBServer(requestDict):
 @app.route('/index')
 def index():
     log.info('Getting Home html')
-    return send_from_directory('static', os.path.join('html', 'home.html'))
+    return render_template('index.html',title='Home')
+    #return send_from_directory('static', os.path.join('html', 'home.html'))
 
 
 @app.route('/timeseries', methods=['GET'])
@@ -109,10 +110,10 @@ def create_ts():
                 level=np.random.choice(['A','B','C','D','E','F']),
                 mean=np.mean(data['value']),
                 std=np.std(data['value']))
-    db.session.add(ts)
+    db.session.add(ts
     db.session.commit()
     return jsonify({request.json})
-
+)
 
 @app.route('/timeseries/<ts_id>', methods=['GET'])
 def get_timeseries_by_id(ts_id):
