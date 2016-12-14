@@ -116,7 +116,7 @@
 
 
         function plotSingle(response, idx){
-          //console.log(response)
+          console.log(response)
           //console.log('plot a ts')
           //console.log('plotSingle id', response['id'])
           //console.log('timeseries time',response['ts'][0]['times'])
@@ -309,7 +309,7 @@
               var y = ts['value']
               var data = [x,y]
               var z = x.map(function(e,i){return [e, y[i]]});
-              var plots = []; 
+              var plots = [];
               //var meta_msg = ["<h4>Metadata</h4><ul>"];
 
               plots.push({"data":z});
