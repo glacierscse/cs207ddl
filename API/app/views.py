@@ -131,7 +131,7 @@ def get_timeseries_by_id(ts_id):
     return jsonify(response)
 
 
-#should take a id=the_id querystring and use that as an id into the database to 
+#should take a id=the_id querystring and use that as an id into the database to
 #find the timeseries that are similar, sending back the ids of (say) the top 5.
 @app.route('/simquery', methods=['GET'])
 def get_simts_by_id():
@@ -145,7 +145,7 @@ def get_simts_by_id():
         log.info('getting the id of 5 most silimar timeseries from input')
         return jsonify(response)
 
-#take a timeseries as an input in a JSON, carry out the query, 
+#take a timeseries as an input in a JSON, carry out the query,
 #and return the appropriate ids as well. This is an unusual use of POST.
 @app.route('/simquery', methods=['POST'])
 def simquery_post():
@@ -163,5 +163,3 @@ def simquery_post():
     return jsonify(response)
 
 db.create_all()
-
-
