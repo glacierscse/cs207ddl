@@ -1,13 +1,16 @@
 # git clone
 sudo apt-get install git
 
-sudo git clone https://github.com/glacierscse/cs207ddl.git
+git clone https://github.com/glacierscse/cs207ddl.git
 
 #install all packages
-./scripts/cs207_aws_ec2_stack.sh
+bash ./cs207ddl/scripts/cs207_aws_ec2_stack.sh
 
-#set up the database
-python3 setup.py
+#set up the databases
+python ./cs207ddl/setup.py
 
 #set up the server
-./scripts/serversetup.sh
+bash ./cs207ddl/scripts/serversetup.sh
+
+#chmod +x setupAll.sh
+#Put in readme, hitting yes 1+1+1

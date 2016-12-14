@@ -24,30 +24,35 @@ mkdir venvs
 virtualenv --python=/usr/bin/python3 venvs/flaskproj
 
 printf "\n*******************************************************"
+printf "\nInstalling Flask and SQL Alchemy ...\n"
+source ~/venvs/flaskproj/bin/activate 
+
+
+printf "\n*******************************************************"
 printf "\nUpgrading pip ...\n"
-pip3 install --upgrade pip
+pip install --upgrade pip
 
 # install numpy for Python3
 printf "\n*******************************************************"
 printf "\nInstalling numpy ...\n"
-pip3 install numpy
+pip install numpy
 
 # install portalocker for Python3
 printf "\n*******************************************************"
 printf "\nInstalling portalocker ...\n"
-sudo pip3 install portalocker
+pip install portalocker
 
 # install scipy for Python3
 printf "\n*******************************************************"
 printf "\nInstalling scipy ...\n"
-sudo pip3 install scipy
+pip install scipy
 
 printf "\n*******************************************************"
 printf "\nInstalling Flask and SQL Alchemy ...\n"
-source ~/venvs/flaskproj/bin/activate
+source ~/venvs/flaskproj/bin/activate 
 
 # install flask and SQLAlchemy for Python3
-sudo pip3 install flask Flask-SQLAlchemy
+pip install flask Flask-SQLAlchemy
 
 
 # install PostgreSQL
@@ -77,10 +82,10 @@ printf "\n*******************************************************"
 printf "\nINSTALLATION AND SERVICE CHECKS ...\n"
 printf "\n*******************************************************"
 
-printf "\nCan import numpy, Flask, SQLAlchemy, and psycopg2 in Python3?\n"
-sudo python3 cs207_aws_ec2_stack_test.py
+#printf "\nCan import numpy, Flask, SQLAlchemy, and psycopg2 in Python3?\n"
+#sudo python3 cs207_aws_ec2_stack_test.py
 
 printf "\nIs nginx running?\n"
-sudo service nginx status
+sudo service nginx status  #-r to remove 
 
 printf "\nFINISHED!\n"
