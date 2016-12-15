@@ -7,7 +7,7 @@ git clone https://github.com/glacierscse/cs207ddl.git
 bash ./cs207ddl/scripts/setuppackage.sh
 
 #set up the databases
-bash ./cs207ddl/setup.sh
+bash ./cs207ddl/setupEC2.sh
 
 #set up the server
 bash ./cs207ddl/scripts/serversetup.sh
