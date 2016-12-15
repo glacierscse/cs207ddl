@@ -11,7 +11,7 @@ from timeseries.TimeSeries import TimeSeries
 
 
 class TSDBOp(dict):
-'''
+    '''
     TSDBOp class inherent from dict class to handle the performance of the TSDB
     instruction.
     
@@ -21,7 +21,7 @@ class TSDBOp(dict):
     
     Attributes:
     self['op']: the operation passed in
-'''
+    '''
     def __init__(self, op):
         self['op'] = op
 
@@ -92,11 +92,11 @@ class TSDBOp(dict):
 
 
 class TSDBOp_Return(TSDBOp):
-'''
+    '''
     TSDBOp class to handle the Return, inherent from TSDBOp class.
     Attributes:
         the self dictionary that contains status and payload.
-'''
+    '''
     def __init__(self, status, op, payload=None):
         super().__init__(op)
         self['status'], self['payload'] = status, payload
@@ -114,11 +114,11 @@ class TSDBOp_Return(TSDBOp):
 
 # Myra
 class TSDBOp_Simquery_WithID(TSDBOp):
-'''
+    '''
     the class to handle the simquery with ID operation.
     Attributes:
         the self dictionary that contains status and payload.
-'''
+    '''
     def __init__(self, idee, **kwargs):       ######**kwargs
         super().__init__('simquery_id')
         print("op")
@@ -140,11 +140,11 @@ class TSDBOp_Simquery_WithID(TSDBOp):
 
 #Myra
 class TSDBOp_Simquery_WithTS(TSDBOp):
-'''
+    '''
     the class to handle the simquery with TS operation.
     Attributes:
         the self dictionary that contains ts and other attributes.
-'''
+    '''
     def __init__(self, ts, **kwargs):
         super().__init__('simquery_ts')
         self['ts'] = ts
@@ -165,11 +165,11 @@ class TSDBOp_Simquery_WithTS(TSDBOp):
 
 #Myra
 class TSDBOp_GetTS_WithID(TSDBOp):
-'''
+    '''
     the class to handle the get TS using ID operation.
     Attributes:
         the self dictionary that contains id and other attributes.
-'''
+    '''
     def __init__(self, idee, **kwargs):
         super().__init__('get_id')
         print("init")
