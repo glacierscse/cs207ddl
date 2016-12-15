@@ -7,7 +7,7 @@ git clone https://github.com/glacierscse/cs207ddl.git
 bash ./cs207ddl/scripts/setuppackage.sh
 
 #set up the databases
-python3 ./cs207ddl/setup.py
+bash ./cs207ddl/setup.sh
 
 #set up the server
 bash ./cs207ddl/scripts/serversetup.sh
