@@ -5,8 +5,12 @@ LENGTH_FIELD_LENGTH = 4
 
 def serialize(json_obj):
     '''Turn a JSON object into bytes suitable for writing out to the network.
-    Includes a fixed-width length field to simplify reconstruction on the other
-    end of the wire.'''
+       Includes a fixed-width length field to simplify reconstruction on the other end of the wire.
+       Param:
+           json_obj: the JSON object.
+       Return:
+           bytes converted from the input JSON object.
+    '''
     #your code here
     try:
         #j_obj = json.dumps(json_obj)
@@ -23,13 +27,32 @@ def serialize(json_obj):
 
 class Deserializer(object):
     '''A buffering and bytes-to-json engine.
-    Data can be received in arbitrary chunks of bytes, and we need a way to
-    reconstruct variable-length JSON objects from that interface. This class
-    buffers up bytes until it can detect that it has a full JSON object (via
-    a length field pulled off the wire). To use this, shove bytes in with the
-    append() function and call ready() to check if we've reconstructed a JSON
-    object. If True, then call deserialize to return it. That object will be
-    removed from this buffer after it is returned.'''
+       Data can be received in arbitrary chunks of bytes, and we need a way to
+       reconstruct variable-length JSON objects from that interface. This class
+       buffers up bytes until it can detect that it has a full JSON object (via
+       a length field pulled off the wire). To use this, shove bytes in with the
+       append() function and call ready() to check if we've reconstructed a JSON
+       object. If True, then call deserialize to return it. That object will be
+       removed from this buffer after it is returned.
+
+
+       Implements:
+
+           object.
+
+
+       Attributes:
+
+           buf: buffer.
+           buflen: length of buffer.
+
+
+       Methods:
+
+           append: The function that shoves bytes in from the received chunks of bytes.
+           ready: The function to check if we've reconstructed a JSON object.
+           deserialize: The function to return a JSON object if we have reconstructed one.
+    '''
 
     def __init__(self):
         self.buf = b''
