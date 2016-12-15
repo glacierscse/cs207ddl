@@ -1,8 +1,8 @@
-from error import *
 from collections import OrderedDict
 import sys
 sys.path.append('../')
 from timeseries.TimeSeries import TimeSeries
+from sockets.error import *
 
 # Interface classes for TSDB network operations.
 # These are a little clunky (extensibility is meh), but it does provide strong
