@@ -4,7 +4,6 @@ import numpy as np
 from API.app import app, db
 from flask import request, abort, jsonify, make_response
 from flask import render_template, send_from_directory
-#from flask_sqlalchemy import SQLAlchemy, DeclarativeMeta
 from flask_sqlalchemy import SQLAlchemy, DeclarativeMeta
 from json import JSONEncoder
 
@@ -20,7 +19,7 @@ import pickle
 from sockets.serialization import *
 
 
-from .models import Metadata #???
+from .models import Metadata 
 
 class ProductJSONEncoder(JSONEncoder):
 
@@ -42,15 +41,16 @@ app.json_encoder = ProductJSONEncoder
 # # postgres_url = url.format(user, password, host, port, dbname)
 
 def connectDBServer(requestDict):
-    "Connect to the custom similarity server. Send and receive a request"
+    """"This is the function that connect to the database server 
+    Param:
+        requestDict: the query that sent from server to client
+    Return:
+        response: the rsponse sent back from the server to the clients
+    """
     s = socket(AF_INET, SOCK_STREAM)
-    #host = socket.gethostname()
-    #s.connect((host, 12341))
     s.connect(('localhost', 12342))
     s2 = serialize(json.dumps(requestDict))
     s.send(s2)
-    #print('send')
-    #print(s.recv(1024))
     msg = s.recv(8192)
     print(msg)
     ds = Deserializer()
@@ -66,10 +66,18 @@ def index():
     log.info('Getting Home html')
     return send_from_directory('static', os.path.join('html', 'home.html'))
 
-
 @app.route('/timeseries', methods=['GET'])
 def get_metadata_range():
-
+    """This is the function that send back a json with metadata from all the time series.
+    /timeseries?mean_in=1.5-1.53 type queries should now be supported and send back 
+    only metadata. For continuous variables you only need to support range queries with 
+    string mean_in=1.5-1.53 whereas for discrete variables(level here) you need to support 
+    equals and in level_in=A,B,C or level=A. For simpilicity we wont support equals or 
+    less-than/greater-than type queries on continuous variables. Finally we'll support only 
+    one query at a time (so no combined SELECTs on the database). This will enable you to develop 
+    either in DBAPI2 or SQLAlchemy (your choice, although I think that using Flask-SQLAlchemy is a 
+    bit easier).
+    """
     if 'mean_in' in request.args:
         mean_in = request.args.get('mean_in')
         mean_range = mean_in.split('-')
@@ -98,24 +106,40 @@ def get_metadata_range():
 
 @app.route('/timeseries', methods=['POST'])
 def create_ts():
+    """adds a new timeseries into the database given a json which has a key 
+    for an id and a key for the timeseries, and returns the timeseries.
+    """
     if not request.json:
         abort(400)
-    log.info('Creating timeseries entries in metadata')
+    log.info('Getting data from user')
 
     data = json.loads(request.json)
-
-    ts = Metadata(id=data['id'],
-                blarg=np.random.choice([0,1]),
-                level=np.random.choice(['A','B','C','D','E','F']),
-                mean=np.mean(data['value']),
-                std=np.std(data['value']))
-    db.session.add(ts)
-    db.session.commit()
-    return jsonify({request.json})
+    if data['id']<=999 and data['id']>=0:
+        print("timeseries already in the file.")
+        log.info('showing the timeseries on the screen.')
+    else:
+        print("timeseries not in database.")
+        log.info('adding time series to the meta database.')
+        ts = Metadata(id=data['id'],
+                          blarg=np.random.choice([0,1]),
+                          level=np.random.choice(['A','B','C','D','E','F']),
+                          mean=np.mean(data['ts'][1]),
+                          std=np.std(data['ts'][1]))
+        db.session.add(ts)
+        db.session.commit()
+        toSend = {'op':'insert_ts','id':data['id'], 'ts': data['ts']}
+        print("REQUEST IS", toSend)
+        response = connectDBServer(toSend)
+        print("-----------received------------")
+        print(jsonify(response))
+        log.info('adding time series to the meta SMDB.')
+        return jsonify(response)
 
 
 @app.route('/timeseries/<ts_id>', methods=['GET'])
 def get_timeseries_by_id(ts_id):
+    """this function should send back metadata and the timeseries itself in a JSON payload
+    """
     #send back metdata
     query = Metadata.query.filter_by(id=ts_id).all()
     if query is None:
@@ -130,10 +154,12 @@ def get_timeseries_by_id(ts_id):
     return jsonify(response)
 
 
-#should take a id=the_id querystring and use that as an id into the database to 
-#find the timeseries that are similar, sending back the ids of (say) the top 5.
+
 @app.route('/simquery', methods=['GET'])
 def get_simts_by_id():
+    '''this function should take a id=the_id querystring and use that as an id into the database 
+    to find the timeseries that are similar, sending back the ids of (say) the top 5.
+    '''
     if 'id' in request.args:
         ts_id = request.args.get('id')
         #default n is 5
@@ -144,10 +170,12 @@ def get_simts_by_id():
         log.info('getting the id of 5 most silimar timeseries from input')
         return jsonify(response)
 
-#take a timeseries as an input in a JSON, carry out the query, 
-#and return the appropriate ids as well. This is an unusual use of POST.
+
 @app.route('/simquery', methods=['POST'])
 def simquery_post():
+    '''this function shoulf take a timeseries as an input in a JSON, carry out the 
+    query, and return the appropriate ids as well. This is an unusual use of POST.
+    '''
     if not request.json or 'ts' not in request.json:
         abort(400)
 
