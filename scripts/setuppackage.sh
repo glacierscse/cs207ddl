@@ -80,8 +80,8 @@ printf "\n*******************************************************"
 printf "\nCan import numpy, Flask, SQLAlchemy, and psycopg2 in Python3?\n"
 sudo python3 cs207_aws_ec2_stack_test.py
 
-printf "\nIs nginx running?\n"
-sudo service nginx status
+#printf "\nIs nginx running?\n"
+#sudo service nginx status
 
 
 printf "\nFINISHED!\n"
