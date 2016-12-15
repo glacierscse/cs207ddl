@@ -128,11 +128,9 @@ if __name__ == '__main__':
 	tsdb = TSDB_Server(s,f)
 	tsdb.run()
 
-	#z = '-----------------------------------'
-    #ThreadingTCPServer.allow_reuse_address = True #????
-    #serv = ThreadingTCPServer(('', 12341), TSDB_Server) 
-    #serv.data = initialize_simsearch_parameters()
-    #serv.deserializer = Deserializer()
-    #print('Ready',z)
-    #serv.serve_forever()
+	#main function of the server file, which calls a searchEngine and 
+	#a filestorageManager in the mean. and create a instance of TSDB Server
+	#with running searchEngine and FileStorageManager and boost up the 
+	#TSDB_Server
+  
 

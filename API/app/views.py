@@ -64,7 +64,8 @@ def connectDBServer(requestDict):
 @app.route('/index')
 def index():
     log.info('Getting Home html')
-    return send_from_directory('static', os.path.join('html', 'home.html'))
+    return render_template('index.html',title='Home')
+    #return send_from_directory('static', os.path.join('html', 'home.html'))
 
 @app.route('/timeseries', methods=['GET'])
 def get_metadata_range():
@@ -154,7 +155,6 @@ def get_timeseries_by_id(ts_id):
     return jsonify(response)
 
 
-
 @app.route('/simquery', methods=['GET'])
 def get_simts_by_id():
     '''this function should take a id=the_id querystring and use that as an id into the database 
@@ -190,5 +190,3 @@ def simquery_post():
     return jsonify(response)
 
 db.create_all()
-
-

@@ -1,15 +1,24 @@
 import enum
 
 class TSDBError(Exception):
+    '''The TSDBError class in Python.
+    '''
     pass
 
 class TSDBOperationError(Exception):
+    '''The TSDBOperationError class in Python.
+    '''
     pass
 
 class TSDBConnectionError(Exception):
+    '''The TSDBConnectionError class in Python.
+    '''
     pass
 
 class TSDBStatus(enum.IntEnum):
+    '''The TSDBStatus class in Python.
+       The class member variables defines some representation of status.
+    '''
     OK = 0
     UNKNOWN_ERROR = 1
     INVALID_OPERATION = 2

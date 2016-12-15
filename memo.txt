@@ -1,0 +1,25 @@
+##### Install Dependency
+pip install —update
+portalocker
+flask_sqlalchemy
+
+####### Before Setup.py
+# rm API/app.db
+# rm -r ts_data
+# rm -r ts_db_index
+# rm -r timeseriesDB
+# rm id.json
+# rm vantage_pts.dat
+
+####### Running Procedure
+0. python setup.py
+1. python sockets/Server.py(server)
+2. python run.py(client)
+
+
+
+
+####### API & DataBase Test examples
+MetaDataBase: http://127.0.0.1:5000/timeseries?level_in=A,B,C
+RBTreeDataBase: http://127.0.0.1:5000/simquery?id=4
+SMTSDataBase: http://127.0.0.1:5000/timeseries/3
