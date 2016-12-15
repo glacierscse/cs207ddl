@@ -42,3 +42,6 @@ ps aux|grep python3
 printf "\nFINISHED!\n"
 
 printf "\nTry hitting the public domain now!\n"
+
+printf "\nIs nginx running?\n"
+sudo service nginx status
