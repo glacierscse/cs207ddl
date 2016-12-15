@@ -55,21 +55,39 @@ class Deserializer(object):
     '''
 
     def __init__(self):
+        '''The constructor to initialize a Deserializer object. 
+        '''
         self.buf = b''
         self.buflen = -1
 
     def append(self, data):
+        '''The function that shoves bytes in from the received chunks of bytes.
+           Param:
+               data: the data received in arbitrary chunks of bytes.
+        ''' 
         self.buf += data
         self._maybe_set_length()
 
     def _maybe_set_length(self):
+        '''The helper function of append function above.
+        '''
         if self.buflen < 0 and len(self.buf) >= LENGTH_FIELD_LENGTH:
             self.buflen = int.from_bytes(self.buf[0:LENGTH_FIELD_LENGTH], byteorder="little")
 
     def ready(self):
+        '''The function to check if we've reconstructed a JSON object.
+           Return:
+               true if we have reconstructed a JSON object;
+               false otherwise.
+        '''   
         return (self.buflen > 0 and len(self.buf) >= self.buflen)
 
     def deserialize(self):
+        '''The function to return a JSON object if we have reconstructed one.
+           The returned object will then be removed from buffer.
+           Return:
+               the reconstructed JSON object.
+        '''
         json_str = self.buf[LENGTH_FIELD_LENGTH:self.buflen].decode()
         self.buf = self.buf[self.buflen:]
         self.buflen = -1
