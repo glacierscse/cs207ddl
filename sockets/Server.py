@@ -18,8 +18,19 @@ import os
 LENGTH_FIELD_LENGTH = 4
 
 class TSDB_Server(socketserver.BaseRequestHandler):
+'''
+    TimeSeries Database Server.
+    Including rbTree database and storage manager database. Manage the communication port.
+    
+    functions: 
+    run, echo_client, data_received, _simquery_with_ts, _simquery_with_id, _getts_with_id
+    
+'''
 
 	def __init__(self, database1,database2, port = ("localhost", 12342)):
+		'''
+		   initialize the TimeSeries Database Server.
+		'''
 		self.rbdb = database1
 		self.smdb = database2
 		self.addr = port
@@ -27,6 +38,14 @@ class TSDB_Server(socketserver.BaseRequestHandler):
 
 
 	def run(self):
+		'''
+		   run the server to listen to the request of the clients.
+		   Start the connection.
+		   input:
+		       null
+		   return:
+		       null
+		'''
 		pool = ThreadPoolExecutor(12)
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -40,6 +59,14 @@ class TSDB_Server(socketserver.BaseRequestHandler):
 
 
 	def echo_client(self, socket, client_addr):
+		'''
+		   the server sends back the result of the request  to the clinet. 
+		   Close the connection.
+		   input:
+		       socket object and the port.
+		   return:
+		       null
+		'''
 		print('Got connection from', client_addr) 
 		while True:
 			msg = socket.recv(8192)
@@ -52,6 +79,14 @@ class TSDB_Server(socketserver.BaseRequestHandler):
 
 
 	def data_received(self, data):
+		'''
+		The server receives the data, deserializes it, deals with the operation and prepares the result.
+		Then the server takes the result to json files, serialize them.
+		input:
+		    data
+		return:
+		    return a serialized result.
+		'''
 		print("data received")
 		print(data)
 		self.deserializer.append(data)
@@ -91,6 +126,13 @@ class TSDB_Server(socketserver.BaseRequestHandler):
 			# send it out
 
 	def _simquery_with_ts(self, op):
+		'''
+		   Given a timeseries, get the first n similar timeseries.
+		   input:
+		       op dictionary
+		   return:
+		       result dictionary
+		'''
 		id_list = self.rbdb.search_by_ts(op['ts'], op['n'])
 
 		result = TSDBOp_Simquery_WithTS('simquery_ts')
@@ -98,6 +140,13 @@ class TSDB_Server(socketserver.BaseRequestHandler):
 		return result
 
 	def _simquery_with_id(self, op):
+		'''
+		   Given an id, get the first n similar timeseries.
+		   input:
+		       op dictionary
+		   return:
+		       result dictionary
+		'''
 		print("insideID")
 		id_list = self.rbdb.search_by_id(op['id'], op['n'],self.smdb)
 		result = TSDBOp_Simquery_WithID('simquery_id')
@@ -105,6 +154,13 @@ class TSDB_Server(socketserver.BaseRequestHandler):
 		return result
 
 	def _getts_with_id(self, op):
+		'''
+		   Given an id, get the corresponding timeseries.
+		   input:
+		       op dictionary
+		   return:
+		       result dictionary
+		'''
 		ts = self.rbdb.getts_with_id(op['id'],self.smdb)
 		ts_list = [{"times":list(ts.times())}, {"values":list(ts.values())}]
 		print(ts_list)
