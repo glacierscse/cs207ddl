@@ -16,6 +16,9 @@ This creates the connection between the server and client
 Now copy the website link from the terminal (something like: http://127.0.0.1:5000/)
 Now we can upload the json file or id onto the server and return the 5 most similar time series in the database. This uses the connection between flask and server and the UI. 
 
+## How use the website
+On the website, there are three buttons: Upload a JSON File, Get Similar and Display button. If the user input a valid timeseries ID into the window, and then click the the Get Similar button, then the top five most similar timeseries IDs will show on the website. If the user then click the Display button, then the plots of the five nearest timeseries will be displayed. The website UI also support JSON file upload. If the user upload a valid JSON file, and then click the Display button, the top five most similar timeseries from the database will be plotted. 
+
 ## pip setup package
 Create a pip setup package for the project by using Pyscaffold in the dist/glacierscse-1.0.tar.gz. Also setup.cfg, setup.py and glacierscse.egg-info/* are included.
 
