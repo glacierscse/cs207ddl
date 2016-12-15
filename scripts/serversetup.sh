@@ -33,8 +33,8 @@ printf "\nStarting Application Servers...\n"
 # cd /home/www/app-server/ && nohup gunicorn app:app -b localhost:8000 & disown
 # cd /home/www/api-server/ && nohup gunicorn flaskr:app -b localhost:5001 & disown
 
-cd /home/ubuntu/cs207ddl && nohup python3 run.py & disown
-cd /home/ubuntu/cs207ddl/sockets && nohup python3 Server.py & disown
+cd /home/ubuntu/cs207ddl && python3 run.py
+cd /home/ubuntu/cs207ddl/sockets && python3 Server.py 
 
 printf "\nPython Processes...\n"
 ps aux|grep python3
